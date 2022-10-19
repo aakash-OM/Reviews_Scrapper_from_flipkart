@@ -2,15 +2,36 @@ from flask import Flask, render_template, request,jsonify
 from flask_cors import CORS,cross_origin
 import requests
 from bs4 import BeautifulSoup as bs
+import pickle
 from urllib.request import urlopen as uReq
 
 app = Flask(__name__)
 
-@app.route('/',methods=['GET'])  # route to display the home page
+
+@app.route('/')
+def hello_world():
+    return render_template("login.html")
+database={'Aakash':'1234','Dev':'4321','Harry':'@1234'}
+
+@app.route('/form_login',methods=['POST','GET'])
+def login():
+    name1=request.form['username']
+    pwd=request.form['password']
+    if name1 not in database:
+	    return render_template('login.html',info='Invalid User')
+    else:
+        if database[name1]!=pwd:
+            return render_template('login.html',info='Invalid Password')
+        else:
+	        return render_template('index.html',name=name1)
+
+
+
+
+@app.route('/review',methods=['GET'])  # route to display the home page
 @cross_origin()
 def homePage():
     return render_template("index.html")
-
 @app.route('/review',methods=['POST','GET']) # route to show the review comments in a web UI
 @cross_origin()
 def index():
